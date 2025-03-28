@@ -24,15 +24,21 @@ function App() {
 
     let words =  text.split(" ")
     
-    const lastword = words[words.length-1].toLowerCase();
+    const correctedWords = words.map((word)=>{
+      const correctedWord = customDictionary[word.toLowerCase()];
+      return correctedWord || word;
+    })
 
-    if(customDictionary[lastword]){
-      const correctWord= customDictionary[lastword];
-      setShow(true);
-      setSuggestedText(correctWord);
-    }else{
-      setShow(false);
+    for(let i=0; i<words.length; i++){
+      if(correctedWords[i] !== words[i]){
+        setSuggestedText(correctedWords[i]);
+        return;
+      }
     }
+
+
+    setSuggestedText("");
+
   }
 
 
@@ -41,8 +47,8 @@ function App() {
   return (
     <div className="App">
       <h1>Spell Check</h1>
-      <textarea rows={5} cols={40} value={inputText} onChange={(e) => handleChange(e)}></textarea>
-      {show && <p>
+      <textarea rows={5} cols={40} value={inputText} placeholder="Enter text..." onChange={(e) => handleChange(e)}></textarea>
+      {suggestedText && <p>
         Did you mean: <strong>{suggestedText}</strong>?
       </p>}
     </div>
